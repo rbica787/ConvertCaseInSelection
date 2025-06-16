@@ -1,0 +1,51 @@
+Sub ConvertCaseInSelection()
+'
+' ConvertCaseInSelection Macro
+' converts all selected cells to either lowercase or uppercase letters
+'
+' Keyboard Shortcut: Ctrl+Shift+L
+'
+    Dim caseChoice As String
+    Dim cell As Range
+
+    ' Prompt user for case choice
+    Do
+        caseChoice = InputBox( _
+            "Choose conversion type:" & vbCrLf & _
+            "[U] - UPPERCASE" & vbCrLf & _
+            "[L] - lowercase" & vbCrLf & _
+            "[C] - Capitalize First Letters", _
+            "Case Conversion")
+
+        caseChoice = UCase(Trim(caseChoice))
+
+        If caseChoice = "U" Or caseChoice = "L" Or caseChoice = "C" Then
+            Exit Do
+        ElseIf caseChoice = "" Then
+            Exit Sub
+        Else
+            MsgBox "Invalid input. Enter 'U', 'L', or 'C'.", vbExclamation, "Invalid Choice"
+        End If
+    Loop
+
+    ' Apply case conversion
+    If Selection.Cells.Count = 0 Then
+        MsgBox "Please select some cells before running this macro.", vbInformation, "No Cells Selected"
+        Exit Sub
+    End If
+
+    For Each cell In Selection
+        If Not IsEmpty(cell.Value) And VarType(cell.Value) = vbString Then
+            Select Case caseChoice
+                Case "U"
+                    cell.Value = UCase(cell.Value)
+                Case "L"
+                    cell.Value = LCase(cell.Value)
+                Case "C"
+                    cell.Value = StrConv(LCase(cell.Value), vbProperCase)
+            End Select
+        End If
+    Next cell
+
+    MsgBox "Text conversion complete!", vbInformation, "Done"
+End Sub
